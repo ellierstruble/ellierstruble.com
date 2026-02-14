@@ -184,6 +184,7 @@ body{
   background: var(--bg);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
   z-index: 10;
+  cursor: not-allowed;
 }
 
 /* Show the dropdown menu when hovering the button or the menu itself */
