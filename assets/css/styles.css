@@ -46,6 +46,32 @@ body{
   font-size: 14px;
 }
 
+.footer{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  margin-top: 50px;
+}
+
+.social-links {
+  margin-left: 800px;
+}
+
+.social-links a {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  margin: 0 20px;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #888;
+}
+
 .nav-toggle{
   margin-left:auto;
   background: transparent;
@@ -60,6 +86,7 @@ body{
   display: flex;
   align-items: center;
   gap: 16px;
+  transition: 0.3s ease;
 }
 
 .nav-links a{
@@ -119,38 +146,67 @@ body{
   transform: scale(1.02);
 }
 
-/* Dropdown */
-.dropdown{ position: relative; }
-.dropdown-btn{
+/* Dropdown container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* The button */
+.dropdown-btn {
   background: transparent;
   border: 0;
   padding: 0;
   font: inherit;
   color: var(--text);
-  cursor: pointer;
   font-size: 14px;
+  cursor: pointer;  /* Pointer is only for hover, not clicking */
+  display: flex;
+  align-items: center;
 }
 
-.dropdown-menu{
+/* Arrow styling */
+.dropdown-btn span {
+  margin-left: 5px;
+  transition: transform 0.3s ease; /* Smooth transition for arrow rotation */
+}
+
+/* Dropdown menu (hidden by default) */
+.dropdown-menu {
+  display: none;
   position: absolute;
-  top: 28px;
+  top: 100%; /* Position it below the button */
   left: 0;
   min-width: 220px;
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--bg);
-  box-shadow: 0 12px 40px rgba(0,0,0,.08);
-  display: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  z-index: 10;
 }
 
-.dropdown-menu a{
-  display:block;
-  padding: 10px 10px;
-  border-radius: 10px;
+/* Show the dropdown menu when hovering the button or the menu itself */
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
-.dropdown-menu a:hover{
-  background: rgba(0,0,0,.04);
+
+/* Rotate the arrow when the dropdown is open */
+.dropdown:hover .dropdown-btn span {
+  transform: rotate(180deg);
+}
+
+/* Links inside the dropdown */
+.dropdown-menu a {
+  display: block;
+  padding: 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.dropdown-menu a:hover {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 /* Lightbox */
