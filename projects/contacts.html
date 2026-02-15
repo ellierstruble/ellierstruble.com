@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | Ellie Struble</title>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href=".././contacts.css" />
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">Ellie Struble</a>
+
+      <nav class="nav">
+        <ul class="nav-menu">
+          <li><a href="projects.html">Projects</a></li>
+
+          <li class="dropdown">
+            <a href="projects.html" class="drop-trigger">Work <i class="fa-solid fa-chevron-down"></i></a>
+            <ul class="dropdown-menu">
+              <li><a href="branding.html">Branding</a></li>
+              <li><a href="animation.html">Animation</a></li>
+              <li><a href="design.html">Design</a></li>
+            </ul>
+          </li>
+
+          <li><a href="about.html">About</a></li>
+          <li><a class="active" href="contacts.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Contact</h1>
+      <p class="subtext">
+        Interested in working together or have a question? Send a message — I’ll get back to you soon.
+      </p>
+    </section>
+
+    <!-- Content Grid -->
+    <section class="grid">
+      <!-- Left: Contact info + socials -->
+      <aside class="card info">
+        <h2>Get in touch</h2>
+
+        <div class="info-list">
+          <a class="info-row" href="mailto:youremail@example.com">
+            <span class="icon"><i class="fa-solid fa-envelope"></i></span>
+            <span class="text">
+              <span class="label">Email</span>
+              <span class="value">youremail@example.com</span>
+            </span>
+          </a>
+
+          <!-- Optional phone -->
+          <a class="info-row" href="tel:+15555555555">
+            <span class="icon"><i class="fa-solid fa-phone"></i></span>
+            <span class="text">
+              <span class="label">Phone</span>
+              <span class="value">(555) 555-5555</span>
+            </span>
+          </a>
+
+          <!-- Optional location -->
+          <div class="info-row no-link" role="group" aria-label="Location">
+            <span class="icon"><i class="fa-solid fa-location-dot"></i></span>
+            <span class="text">
+              <span class="label">Location</span>
+              <span class="value">North Carolina, USA</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>Socials</h3>
+        <div class="socials">
+          <a class="social" href="https://instagram.com/" target="_blank" rel="noopener">
+            <i class="fa-brands fa-instagram"></i><span>Instagram</span>
+          </a>
+          <a class="social" href="https://youtube.com/" target="_blank" rel="noopener">
+            <i class="fa-brands fa-youtube"></i><span>YouTube</span>
+          </a>
+          <a class="social" href="https://linkedin.com/" target="_blank" rel="noopener">
+            <i class="fa-brands fa-linkedin"></i><span>LinkedIn</span>
+          </a>
+          <a class="social" href="https://github.com/" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i><span>GitHub</span>
+          </a>
+        </div>
+
+        <p class="note">
+          Prefer email? That’s totally fine — I usually respond fastest there.
+        </p>
+      </aside>
+
+      <!-- Right: Contact form -->
+      <section class="card form">
+        <h2>Send a message</h2>
+
+        <!-- Option A (simple): uses Formspree — replace YOUR_ID -->
+        <!-- Create a free Formspree form and paste your endpoint -->
+        <form action="https://formspree.io/f/YOUR_ID" method="POST">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" placeholder="Your name" required />
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@email.com" required />
+          </div>
+
+          <div class="field">
+            <label for="subject">Subject</label>
+            <input id="subject" name="subject" type="text" placeholder="What’s this about?" />
+          </div>
+
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="6" placeholder="Write your message…" required></textarea>
+          </div>
+
+          <button class="btn" type="submit">
+            <i class="fa-solid fa-paper-plane"></i> Send
+          </button>
+
+          <p class="fineprint">
+            This form uses Formspree. If you don’t want that, tell me what hosting you use and I’ll switch it.
+          </p>
+        </form>
+      </section>
+    </section>
+
+    <footer class="footer">
+      <p>© <span id="year"></span> Ellie Struble • Built & coded by me</p>
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

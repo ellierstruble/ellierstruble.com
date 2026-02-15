@@ -43,7 +43,7 @@ body{
   color: var(--text);
   font-weight: 650;
   letter-spacing: .06em;
-  font-size: 14px;
+  font-size: 30px;
 }
 
 .footer{
@@ -119,26 +119,23 @@ body{
   font-weight: 650;
 }
 
-/* Gallery grid */
-.gallery{
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+.gallery {
+  column-count: 2;
+  column-gap: 10px;
 }
 
-.tile{
-  display:block;
-  border-radius: 14px;
-  overflow:hidden;
+.tile {
+  break-inside: avoid;
+  margin: 0 0 10px;
+  overflow: hidden;
   background: #f4f4f4;
+  display: block;
 }
 
+/* Let artwork control height */
 .tile img{
-  width:100%;
-  height: 100%;
-  display:block;
-  object-fit: cover;
-  aspect-ratio: 1 / 1;
+  display: block;
+  object-fit: contain; /* no cropping */
   transition: transform .25s ease;
 }
 
@@ -146,68 +143,147 @@ body{
   transform: scale(1.02);
 }
 
-/* Dropdown container */
+/* Container */
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
-/* The button */
-.dropdown-btn {
-  background: transparent;
-  border: 0;
-  padding: 0;
-  font: inherit;
-  color: var(--text);
-  font-size: 14px;
-  cursor: pointer;  /* Pointer is only for hover, not clicking */
+/* Projects, abt and Contacts labels */
+.dropdown-label {
+  cursor: default; /* Not clickable */
+  font-size: 20px;
   display: flex;
   align-items: center;
 }
 
-/* Arrow styling */
-.dropdown-btn span {
+/* Arrow */
+.arrow {
   margin-left: 5px;
-  transition: transform 0.3s ease; /* Smooth transition for arrow rotation */
+  transition: transform 0.3s ease;
 }
 
-/* Dropdown menu (hidden by default) */
+/* Hide dropdown by default */
 .dropdown-menu {
-  display: none;
   position: absolute;
-  top: 100%; /* Position it below the button */
+  top: 100%;
   left: 0;
+
   min-width: 220px;
   padding: 10px;
-  border: 1px solid var(--line);
   border-radius: 14px;
+
   background: var(--bg);
+  border: 1px solid var(--line);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-  z-index: 10;
-  cursor: not-allowed;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
 }
 
-/* Show the dropdown menu when hovering the button or the menu itself */
+/* SHOW ONLY ON HOVER */
 .dropdown:hover .dropdown-menu {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
-/* Rotate the arrow when the dropdown is open */
-.dropdown:hover .dropdown-btn span {
+/* Rotate arrow on hover */
+.dropdown:hover .arrow {
   transform: rotate(180deg);
 }
 
-/* Links inside the dropdown */
+/* Links */
 .dropdown-menu a {
   display: block;
   padding: 10px;
-  border-radius: 10px;
+  background-color: transparent;
   text-decoration: none;
   color: var(--text);
 }
 
 .dropdown-menu a:hover {
   background: rgba(0, 0, 0, 0.04);
+}
+
+.gallery.marquee {
+  --gap: 18px;
+  --speed: 20s; /* smaller = faster */
+  
+
+  overflow: hidden;
+  width: 100%;
+  padding: 18px 0;
+    cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y; /* allow vertical page scroll on mobile */
+}
+
+.gallery.marquee .marquee-track {
+  display: flex;
+  gap: var(--gap);
+  width: max-content;
+  will-change: transform;
+
+  /* move left forever */
+  animation: marqueeLeft var(--speed) linear infinite;
+}
+
+.gallery.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.gallery.marquee .tile {
+  flex: 0 0 auto;
+  width: clamp(220px, 28vw, 360px);
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  display: block;
+  border: 1px solid rgba(0,0,0,0.12);
+  text-decoration: none;
+}
+
+.gallery.marquee .tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.gallery.marquee .tile:hover img {
+  transform: scale(1.04);
+}
+
+/* Seamless loop to the LEFT (requires duplicated items in the track) */
+@keyframes marqueeLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-50% - (var(--gap) / 2))); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery.marquee .marquee-track {
+    animation: none;
+    transform: none;
+  }
+
+  .gallery.marquee.is-dragging {
+  cursor: grabbing;
+}
+
+/* While dragging, stop animation so the user is in control */
+.gallery.marquee.is-dragging .marquee-track {
+  animation-play-state: paused;
+}
+
+.gallery.marquee .marquee-track {
+  backface-visibility: hidden;
+  transform: translate3d(0,0,0);
+}
 }
 
 /* Lightbox */
