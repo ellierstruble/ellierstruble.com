@@ -1,166 +1,217 @@
 (() => {
-  const gallery = document.querySelector('.gallery.marquee');
-  if (!gallery) return;
+  const wrap = document.querySelector(".gallery-wrap");
+  if (!wrap) return;
 
-  const track = gallery.querySelector('.marquee-track');
-  if (!track) return;
+  const marquee = wrap.querySelector(".gallery.marquee");
+  const track = wrap.querySelector(".marquee-track");
+  const leftBtn = wrap.querySelector(".gallery-arrow.left");
+  const rightBtn = wrap.querySelector(".gallery-arrow.right");
 
-  // --- helpers ---
-  const getHalfWidth = () => track.scrollWidth / 2;
+  if (!marquee || !track) return;
 
-  const getPointerX = (e) =>
-    (e.touches && e.touches.length) ? e.touches[0].clientX : e.clientX;
+  // ===== Helpers: read/write translateX =====
+  function getTranslateX(el) {
+    const style = getComputedStyle(el);
+    const transform = style.transform;
+    if (!transform || transform === "none") return 0;
 
-  const readTranslateX = () => {
-    const t = getComputedStyle(track).transform;
-    if (!t || t === 'none') return 0;
-    const m = t.match(/matrix\((.+)\)/);
-    if (!m) return 0;
-    const values = m[1].split(',').map(v => parseFloat(v.trim()));
-    return values[4] || 0;
-  };
+    const match = transform.match(/matrix(3d)?\((.+)\)/);
+    if (!match) return 0;
 
-  const wrapTranslate = (x) => {
-    const half = getHalfWidth();
-    while (x <= -half) x += half;
-    while (x > 0) x -= half;
-    return x;
-  };
+    const parts = match[2].split(",").map(v => parseFloat(v.trim()));
+    return match[1] === "3d" ? parts[12] : parts[4];
+  }
 
-  const setTranslate = (x) => {
-    currentX = wrapTranslate(x);
-    track.style.transform = `translateX(${currentX}px)`;
-  };
+  function setTranslateX(el, x) {
+    el.style.transform = `translate3d(${x}px,0,0)`;
+  }
 
-  const stopCssAnimationAndFreeze = () => {
-    // Freeze animated position into inline transform
-    const frozen = readTranslateX();
-    track.style.animation = 'none';
-    track.style.animationDelay = '';
-    setTranslate(frozen);
-    // force reflow so the browser commits the "animation: none"
-    track.offsetHeight;
-  };
+  // ===== Settings =====
+  const RESUME_DELAY = 900;
 
-  const resumeCssAnimationFromCurrent = () => {
-    // Compute how far we are through one half and apply negative delay
-    const half = getHalfWidth();
-    const progress = Math.abs(currentX) / half; // 0..1
-
-    // Read --speed from gallery (e.g. "10s")
-    const speedStr = getComputedStyle(gallery).getPropertyValue('--speed').trim();
-    const speedSec = parseFloat(speedStr) || 10;
-
-    // Remove inline transform so CSS animation takes over
-    track.style.transform = '';
-    track.style.animation = '';
-    track.style.animationDelay = `-${progress * speedSec}s`;
-  };
-
-  // --- state ---
-  let isDown = false;
-  let startX = 0;
-
-  let currentX = 0;      // current translateX (px, wrapped)
-  let lastX = 0;         // last pointer position
-  let lastTime = 0;      // timestamp
-  let velocity = 0;      // px per ms
-
+  let resumeTimer = null;
   let rafId = null;
-  let inertiaId = null;
+  let lastTs = null;
+  let paused = false;
 
-  // Tuning knobs for “smoothness”
-  const VELOCITY_SMOOTHING = 0.18; // 0..1 (higher = more responsive, lower = smoother)
-  const FRICTION = 0.95;           // 0..1 (closer to 1 = longer glide)
-  const STOP_VELOCITY = 0.02;      // px/ms threshold to stop inertia
-  const INERTIA_FRAME_MS = 16;     // ~60fps
+  // ===== Read CSS vars =====
+  function getGapPx() {
+    const gapStr = getComputedStyle(marquee).getPropertyValue("--gap").trim();
+    return gapStr ? parseFloat(gapStr) : 18;
+  }
 
-  const cancelInertia = () => {
-    if (inertiaId) {
-      clearInterval(inertiaId);
-      inertiaId = null;
-    }
-  };
+  // Your track contains A + B duplicates.
+  // Loop distance should be one set width (half of scrollWidth) + half the gap.
+  function getLoopDistancePx() {
+    const gap = getGapPx();
+    return track.scrollWidth / 2 + gap / 2;
+  }
 
-  const startDrag = (e) => {
-    isDown = true;
-    gallery.classList.add('is-dragging');
+  function getSpeedSeconds() {
+    const speedStr = getComputedStyle(marquee).getPropertyValue("--speed").trim();
+    const n = parseFloat(speedStr);
+    return Number.isFinite(n) ? n : 45;
+  }
 
-    cancelInertia();
+  function getPxPerSecond() {
+    const dist = getLoopDistancePx();
+    const secs = getSpeedSeconds();
+    return dist / secs;
+  }
 
-    stopCssAnimationAndFreeze();
+  // ===== rAF auto-scroll =====
+  function stopRaf() {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    lastTs = null;
+  }
 
-    startX = getPointerX(e);
-    lastX = startX;
-    lastTime = performance.now();
-    velocity = 0;
+  function startRaf() {
+    stopRaf();
 
-    // prevent image ghost drag and page scroll while dragging horizontally
-    e.preventDefault?.();
-  };
+    const pxPerSec = getPxPerSecond();
 
-  const dragMove = (e) => {
-    if (!isDown) return;
+    const tick = (ts) => {
+      if (paused) return;
 
-    const x = getPointerX(e);
-    const now = performance.now();
+      if (!lastTs) lastTs = ts;
+      const dt = (ts - lastTs) / 1000;
+      lastTs = ts;
 
-    const dx = x - lastX;
-    const dt = Math.max(1, now - lastTime);
+      let x = getTranslateX(track);
+      x -= pxPerSec * dt; // move left
 
-    // Instant velocity (px/ms)
-    const v = dx / dt;
+      const loopDist = getLoopDistancePx();
+      if (x <= -loopDist) x += loopDist;
 
-    // Smooth velocity to reduce jitter (trackpad/touch noise)
-    velocity = velocity * (1 - VELOCITY_SMOOTHING) + v * VELOCITY_SMOOTHING;
+      setTranslateX(track, x);
+      rafId = requestAnimationFrame(tick);
+    };
 
-    // Apply movement
-    setTranslate(currentX + dx);
+    rafId = requestAnimationFrame(tick);
+  }
 
-    lastX = x;
-    lastTime = now;
+  function freeze() {
+    const x = getTranslateX(track);
 
-    e.preventDefault?.();
-  };
+    // Ensure CSS animation isn't fighting our transform
+    track.style.animation = "none";
+    track.style.animationPlayState = "paused";
 
-  const endDrag = () => {
-    if (!isDown) return;
-    isDown = false;
-    gallery.classList.remove('is-dragging');
+    stopRaf();
+    setTranslateX(track, x);
 
-    // Inertia glide
-    cancelInertia();
-    inertiaId = setInterval(() => {
-      // Apply velocity to position (convert px/ms -> px/frame)
-      setTranslate(currentX + velocity * INERTIA_FRAME_MS);
+    // force apply
+    track.offsetHeight;
+  }
 
-      // Decay velocity
-      velocity *= FRICTION;
+  function pauseAuto() {
+    paused = true;
+    freeze();
+    if (resumeTimer) clearTimeout(resumeTimer);
+  }
 
-      // Stop when slow
-      if (Math.abs(velocity) < STOP_VELOCITY) {
-        cancelInertia();
-        // Resume CSS marquee exactly where we landed
-        resumeCssAnimationFromCurrent();
+  function resumeAuto() {
+    paused = false;
+    startRaf();
+  }
+
+  function resumeAutoSoon(delay = RESUME_DELAY) {
+    if (resumeTimer) clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => resumeAuto(), delay);
+  }
+
+  // ===== Centering logic for arrows =====
+  function getTiles() {
+    return Array.from(track.querySelectorAll("a.tile"));
+  }
+
+  function getGalleryCenterX() {
+    const rect = marquee.getBoundingClientRect();
+    return rect.left + rect.width / 2;
+  }
+
+  function getCenteredTileIndex() {
+    const tiles = getTiles();
+    if (!tiles.length) return 0;
+
+    const galleryCenter = getGalleryCenterX();
+    let bestIdx = 0;
+    let bestDist = Infinity;
+
+    tiles.forEach((tile, i) => {
+      const r = tile.getBoundingClientRect();
+      const tileCenter = r.left + r.width / 2;
+      const d = Math.abs(tileCenter - galleryCenter);
+      if (d < bestDist) {
+        bestDist = d;
+        bestIdx = i;
       }
-    }, INERTIA_FRAME_MS);
-  };
+    });
 
-  // Mouse
-  gallery.addEventListener('mousedown', startDrag);
-  window.addEventListener('mousemove', dragMove);
-  window.addEventListener('mouseup', endDrag);
+    return bestIdx;
+  }
 
-  // Touch
-  gallery.addEventListener('touchstart', startDrag, { passive: false });
-  gallery.addEventListener('touchmove', dragMove, { passive: false });
-  gallery.addEventListener('touchend', endDrag);
+  function centerTile(tile) {
+    const galleryRect = marquee.getBoundingClientRect();
+    const tileRect = tile.getBoundingClientRect();
 
-  // Prevent native dragging of images
-  track.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
+    const galleryCenter = galleryRect.left + galleryRect.width / 2;
+    const tileCenter = tileRect.left + tileRect.width / 2;
 
-  // Keep wrapping accurate on resize
-  window.addEventListener('resize', () => {
-    setTranslate(currentX);
+    const delta = tileCenter - galleryCenter;
+    const currentX = getTranslateX(track);
+    const targetX = currentX - delta;
+
+    track.style.transition = "transform 400ms ease";
+    setTranslateX(track, targetX);
+
+    window.setTimeout(() => {
+      track.style.transition = "";
+    }, 420);
+  }
+
+  function step(dir) {
+    pauseAuto();
+
+    const tiles = getTiles();
+    if (!tiles.length) return;
+
+    const current = getCenteredTileIndex();
+    let next = current + dir;
+
+    // wrap around
+    if (next < 0) next = tiles.length - 1;
+    if (next >= tiles.length) next = 0;
+
+    centerTile(tiles[next]);
+
+    // resume from same position after a short delay
+    resumeAutoSoon(RESUME_DELAY);
+  }
+
+  // ===== Arrow events =====
+  leftBtn?.addEventListener("click", () => step(-1));
+  rightBtn?.addEventListener("click", () => step(1));
+
+  // ===== Hover pause/resume =====
+  wrap.addEventListener("mouseenter", () => pauseAuto());
+  wrap.addEventListener("mouseleave", () => resumeAuto());
+
+  // Prevent image dragging from interfering
+  marquee.addEventListener("dragstart", (e) => e.preventDefault());
+
+  // ===== Click behavior =====
+  // Don’t block navigation. Just pause for a clean feel.
+  track.addEventListener("click", (e) => {
+    const link = e.target.closest("a.tile");
+    if (link) pauseAuto();
   });
-})();
+
+  // ===== Start =====
+  freeze();
+  paused = false;
+  startRaf();
+})
+
+();

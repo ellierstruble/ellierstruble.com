@@ -36,6 +36,7 @@ body{
   display: flex;
   align-items: center;
   gap: 14px;
+  font-weight: 650;
 }
 
 .brand{
@@ -69,7 +70,8 @@ body{
 }
 
 .social-links a:hover {
-  color: #888;
+  color: #ff0000;
+  transition: .3s;
 }
 
 .nav-toggle{
@@ -85,14 +87,21 @@ body{
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 52px;
   transition: 0.3s ease;
+  font-weight: 550;
 }
 
 .nav-links a{
   text-decoration:none;
   color: var(--text);
-  font-size: 14px;
+  font-size: 20px;
+}
+
+.nav-links a:hover{
+  text-decoration:none;
+  color:#ff0000;
+  transition: .3s;
 }
 
 .hero{
@@ -131,6 +140,14 @@ body{
   padding: 40px 0;
 }
 
+.gallery-wrap{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+
 .gallery-ppage .tile {
   display: block;
   overflow: hidden;
@@ -146,6 +163,8 @@ body{
 
 .gallery-ppage .tile:hover img {
   transform: scale(1.03);
+  filter: grayscale(25) brightness(.5);
+  transition: .3s;
 }
 
 @media (max-width: 900px) {
@@ -166,6 +185,32 @@ body{
   overflow: hidden;
   background: #f4f4f4;
   display: block;
+  position: relative;
+}
+
+/* Title positioning */
+.tile-title{
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  color: #fff;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 1; /* above dark overlay */
+}
+
+/* Show title on hover */
+.tile:hover .tile-title {
+  opacity: 100;
 }
 
 /* Let artwork control height */
@@ -173,11 +218,12 @@ body{
   display: block;
   object-fit: contain; /* no cropping */
   transition: transform .25s ease;
-  pointer-events: none;
 }
 
 .tile:hover img{
   transform: scale(1.02);
+  filter: grayscale(25);
+  transition: .3s;
 }
 
 /* Container */
@@ -227,11 +273,6 @@ body{
   transform: translateY(0);
 }
 
-/* Rotate arrow on hover */
-.dropdown:hover .arrow {
-  transform: rotate(180deg);
-}
-
 /* Links */
 .dropdown-menu a {
   display: block;
@@ -243,20 +284,22 @@ body{
 
 .dropdown-menu a:hover {
   background: rgba(0, 0, 0, 0.04);
+  color:#ff0000;
+  transition: .3s;
 }
 
 .gallery.marquee {
   --gap: 18px;
   --speed: 45s; /* smaller = faster */
-  
 
   overflow: hidden;
   width: 100%;
   padding: 18px 0;
-    cursor: grab;
-  user-select: none;
+    cursor: default;
+    user-select: none;
   -webkit-user-select: none;
-  touch-action: pan-y; /* allow vertical page scroll on mobile */
+  scroll-snap-type: x mandatory;
+  scroll-padding: 50%; /* helps center snapping */
 }
 
 .gallery.marquee .marquee-track {
@@ -264,9 +307,6 @@ body{
   gap: var(--gap);
   width: max-content;
   will-change: transform;
-
-  /* move left forever */
-  animation: marqueeLeft var(--speed) linear infinite;
 }
 
 .gallery.marquee:hover .marquee-track {
@@ -281,6 +321,7 @@ body{
   display: block;
   border: 1px solid rgba(0,0,0,0.12);
   text-decoration: none;
+  scroll-snap-align: center;
 }
 
 .gallery.marquee .tile img {
@@ -293,6 +334,27 @@ body{
 
 .gallery.marquee .tile:hover img {
   transform: scale(1.04);
+  filter: grayscale(25) brightness(.5);
+  transition: .3s;
+}
+
+.gallery-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px white;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  font-size: 35px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.gallery-arrow:active {
+  transform: translateY(1px);
 }
 
 /* Seamless loop to the LEFT (requires duplicated items in the track) */
@@ -308,7 +370,7 @@ body{
   }
 
   .gallery.marquee.is-dragging {
-  cursor: grabbing;
+  cursor: default;
 }
 
 /* While dragging, stop animation so the user is in control */
