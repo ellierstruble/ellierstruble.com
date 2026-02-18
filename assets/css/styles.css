@@ -26,7 +26,7 @@ body{
   top: 0;
   z-index: 10;
   background: var(--bg);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 3px solid var(--line);
 }
 
 .nav{
@@ -52,7 +52,7 @@ body{
   top: 0;
   z-index: 10;
   background: var(--bg);
-  border-top: 1px solid var(--line);
+  border-top: 3px solid var(--line);
   font-size: 12px;
   margin-top: 50px;
 }
@@ -77,7 +77,7 @@ body{
 .nav-toggle{
   margin-left:auto;
   background: transparent;
-  border: 1px solid var(--line);
+  border: 2px solid var(--line);
   padding: 8px 10px;
   border-radius: 10px;
   display: none;
@@ -426,9 +426,7 @@ body{
     position: fixed;
     inset: 64px 14px auto 14px;
     background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 14px;
+    border: 2px solid var(--line);
     display: none;
     flex-direction: column;
     align-items: flex-start;
