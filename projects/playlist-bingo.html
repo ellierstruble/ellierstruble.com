@@ -41,24 +41,48 @@
 
   <main class="container">
     <section class="hero">
-      <h1>Graphic Design</h1>
-      <p style="color: var(--muted); margin-top: 8px;">Playlist Bingo</p>
+      <h1>Playlist Bingo</h1>
+      <p style="color: var(--muted); margin-top: 10px;">Short 2–4 sentence description and tools used (adobe, canva, etc., maybe put pics of software)</p>
     </section>
 
-    <section class="gallery-ppage">
-      <a class="tile" href="../assets/img/playlist-bingo.png">
-        <img src="../assets/img/playlist-bingo.png" alt="Animation work 3" loading="lazy" />
-      </a>
+   <section class="gallery-ppage masonry" aria-label="Project images">
+  <a class="tile" href="../assets/img/playlist-bingo.png" data-lightbox="playlist-bingo">
+    <img src="../assets/img/playlist-bingo.png" alt="Playlist Bingo" loading="lazy" />
+  </a>
+
+  <a class="tile" href="../assets/img/playlist-bingo-2.png" data-lightbox="playlist-bingo">
+    <img src="../assets/img/playlist-bingo-2.png" alt="Playlist Bingo detail 2" loading="lazy" />
+  </a>
+
+  <a class="tile" href="../assets/img/playlist-bingo-3.png" data-lightbox="playlist-bingo">
+    <img src="../assets/img/playlist-bingo-3.png" alt="Playlist Bingo detail 3" loading="lazy" />
+  </a>
 </section>
 
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lightbox-close" type="button" aria-label="Close">×</button>
+  <button class="lightbox-prev" type="button" aria-label="Previous image">‹</button>
+
+  <div class="lightbox-content">
+    <div class="lightbox-stage">
+      <img class="lightbox-img" alt="" />
+    </div>
+
+    <div class="lightbox-caption" aria-live="polite"></div>
+  </div>
+
+  <button class="lightbox-next" type="button" aria-label="Next image">›</button>
+</div>
+
 </section>
 
-  <script src="../assets/js/main.js" defer></script>
+<script src="../assets/js/main.js" defer></script>
+<script src="../assets/js/lightbox.js" defer></script>
 
-  <a href="graphic-design.html">Back</a>
+<a href="graphic-design.html">← Back</a>
 
 <section class="footer">
-<p>Website developed with HTML, CSS & Javascript by Ellie Struble</p>
+  <p>Website developed with HTML, CSS & Javascript by Ellie Struble</p>
 </section>
 
   </main>

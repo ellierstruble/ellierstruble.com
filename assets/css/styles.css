@@ -105,7 +105,7 @@ body{
 }
 
 .hero{
-  padding: 34px 0 10px;
+  padding: 60px 0 30px;
 }
 
 .hero h1{
@@ -135,7 +135,7 @@ body{
 
 .gallery-ppage {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   gap: 24px;
   padding: 40px 0;
 }
@@ -155,16 +155,15 @@ body{
 
 .gallery-ppage .tile img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;       /* key */
   display: block;
-  transition: transform 0.4s ease;
+  object-fit: contain; /* ensures full image */
 }
 
 .gallery-ppage .tile:hover img {
   transform: scale(1.03);
-  filter: grayscale(25) brightness(.5);
-  transition: .3s;
+  filter: grayscale(25) brightness(60%);
+  transition: .4s;
 }
 
 @media (max-width: 900px) {
@@ -183,7 +182,6 @@ body{
   break-inside: avoid;
   margin: 0 0 10px;
   overflow: hidden;
-  background: #f4f4f4;
   display: block;
   position: relative;
 }
@@ -222,8 +220,38 @@ body{
 
 .tile:hover img{
   transform: scale(1.02);
-  filter: grayscale(25);
+  filter: grayscale(25) brightness(60%);
   transition: .3s;
+}
+
+/* Masonry / puzzle layout (category pages) */
+.gallery-ppage.masonry{
+  display: block;           /* override your grid */
+  column-count: 2;
+  column-gap: 28px;   /* was 18 */
+  padding: 60px 0;    /* more top/bottom air */
+}
+
+.gallery-ppage.masonry .tile{
+  display: inline-block;    /* required for columns */
+  width: 100%;
+  margin: 0 0 18px;
+  break-inside: avoid;
+}
+
+.gallery-ppage.masonry .tile img{
+  width: 100%;
+  height: auto;             /* ✅ auto-fit to image */
+  display: block;
+  object-fit: contain;      /* no cropping */
+}
+
+/* Responsive */
+@media (max-width: 900px){
+  .gallery-ppage.masonry{ column-count: 2; }
+}
+@media (max-width: 600px){
+  .gallery-ppage.masonry{ column-count: 1; }
 }
 
 /* Container */
@@ -315,26 +343,22 @@ body{
 
 .gallery.marquee .tile {
   flex: 0 0 auto;
-  width: clamp(220px, 28vw, 360px);
-  aspect-ratio: 4 / 3;
+  height: 260px; /* choose your visual height */
+  width: auto;
   overflow: hidden;
   display: block;
   border: 1px solid rgba(0,0,0,0.12);
-  text-decoration: none;
-  scroll-snap-align: center;
 }
 
 .gallery.marquee .tile img {
-  width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.35s ease;
+  width: auto;
+  object-fit: contain; /* shows full design */
 }
 
 .gallery.marquee .tile:hover img {
   transform: scale(1.04);
-  filter: grayscale(25) brightness(.5);
+  filter: grayscale(25) brightness(60%);
   transition: .3s;
 }
 
@@ -384,39 +408,87 @@ body{
 }
 }
 
-/* Lightbox */
-.lightbox{
+/* Lightbox overlay */
+.lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.82);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+}
+
+.lightbox-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: min(1100px, 92vw);
+}
+
+.lightbox.is-open {
+  display: flex;
+}
+
+.lightbox-figure {
+  margin: 0;
+  max-width: min(1100px, 92vw);
+  max-height: 82vh;
   display: grid;
-  place-items: center;
-  padding: 18px;
+  gap: 5px;
+  justify-items: center;
 }
-.lightbox-img{
-  max-width: 95vw;
-  max-height: 85vh;
-  border-radius: 14px;
+
+.lightbox-stage {
+  overflow: hidden;
+  max-width: min(1100px, 92vw);
+  max-height: 82vh;
+  cursor: grab;
 }
-.lightbox-close{
-  position: fixed;
-  top: 14px;
-  right: 14px;
+
+.lightbox-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 82vh;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform-origin: center center;
+  transition: transform 0.12s ease;
+  will-change: transform;
+}
+
+
+.lightbox-caption {
+  margin-top: 12px;
+  text-align: center;
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  border: 0;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.25);
-  background: rgba(0,0,0,.25);
-  color: #fff;
-  font-size: 26px;
+  cursor: pointer;
 }
 
-/* Responsive: desktop grid */
-@media (min-width: 720px){
-  .gallery{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-@media (min-width: 1024px){
-  .gallery{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.lightbox-close { top: 16px; right: 16px; font-size: 28px; line-height: 44px; }
+.lightbox-prev  { left: 16px;  top: 50%; transform: translateY(-50%); font-size: 28px; }
+.lightbox-next  { right: 16px; top: 50%; transform: translateY(-50%); font-size: 28px; }
+
+@media (max-width: 640px) {
+  .lightbox-prev { left: 10px; }
+  .lightbox-next { right: 10px; }
 }
 
 /* Mobile menu behavior */

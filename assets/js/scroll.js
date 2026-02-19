@@ -201,17 +201,27 @@
   // Prevent image dragging from interfering
   marquee.addEventListener("dragstart", (e) => e.preventDefault());
 
-  // ===== Click behavior =====
-  // Don’t block navigation. Just pause for a clean feel.
-  track.addEventListener("click", (e) => {
-    const link = e.target.closest("a.tile");
-    if (link) pauseAuto();
-  });
+ // ===== Click behavior =====
+// Make navigation reliable even while marquee is moving
+track.addEventListener("click", (e) => {
+  const link = e.target.closest("a.tile");
+  if (!link) return;
 
-  // ===== Start =====
-  freeze();
-  paused = false;
-  startRaf();
-})
+  // If user is selecting/dragging, don't navigate
+  const moved = Math.abs((e.movementX || 0)) + Math.abs((e.movementY || 0));
+  if (moved > 3) return;
 
-();
+  pauseAuto();
+
+  const href = link.getAttribute("href");
+  if (!href) return;
+
+  // Respect new-tab / modified clicks
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+
+  // Ensure we actually navigate (prevents "dead click" issues)
+  e.preventDefault();
+  window.location.href = href;
+});
+
+})();
