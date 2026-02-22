@@ -224,4 +224,11 @@ track.addEventListener("click", (e) => {
   window.location.href = href;
 });
 
+// ===== Auto-start 1 second after page load =====
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    resumeAuto();
+  }, 1000);
+});
+
 })();

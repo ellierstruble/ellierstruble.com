@@ -47,31 +47,82 @@ body{
   font-size: 30px;
 }
 
-.footer{
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--bg);
-  border-top: 3px solid var(--line);
-  font-size: 12px;
-  margin-top: 50px;
+/* Project navigation container */
+.project-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 80px 0 40px;
+  padding-top: 40px;
 }
 
-.social-links {
-  margin-left: 800px;
-}
-
-.social-links a {
-  color: rgb(0, 0, 0);
+/* Base link style (same for both) */
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
-  margin: 0 20px;
-  font-weight: 500;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 550;
   transition: 0.3s ease;
 }
 
-.social-links a:hover {
+/* Hover effect */
+.project-link:hover {
   color: #ff0000;
-  transition: .3s;
+}
+
+/* Arrow style */
+.project-link .arrow {
+  font-size: 22px;
+  transition: transform 0.3s ease;
+}
+
+/* Directional hover motion */
+.project-link.prev:hover .arrow {
+  transform: translateX(-4px);
+}
+
+.project-link.next:hover .arrow {
+  transform: translateX(4px);
+}
+
+.footer {
+  border-top: 3px solid var(--line);
+  margin-top: 80px;
+  padding: 25px 0;
+  font-size: 13px;
+}
+
+.footer-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap; /* makes it responsive */
+}
+
+.footer-left {
+  color: var(--muted);
+}
+
+.footer-right {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-right a {
+  text-decoration: none;
+  color: var(--text);
+  transition: 0.3s ease;
+}
+
+.footer-right a:hover {
+  color: #ff0000;
 }
 
 .nav-toggle{
@@ -129,15 +180,7 @@ body{
 }
 
 .gallery {
-  column-count: 2;
   column-gap: 10px;
-}
-
-.gallery-ppage {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  gap: 24px;
-  padding: 40px 0;
 }
 
 .gallery-wrap{
@@ -147,22 +190,34 @@ body{
   gap: 10px;
 }
 
+/* Collection grid (auto-fit columns like Wix) */
+.gallery-ppage{
+  --minTile: 240px;  /* raise/lower to control how many columns appear */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--minTile), 1fr));
+  gap: 18px;         /* spacing between tiles */
+  padding: 40px 40px;
+  align-items: start;
+}
 
-.gallery-ppage .tile {
+/* Tiles */
+.gallery-ppage .tile{
+  position: relative;
   display: block;
   overflow: hidden;
 }
 
-.gallery-ppage .tile img {
+/* Images (show full artwork, no cropping) */
+.gallery-ppage .tile img{
   width: 100%;
-  height: auto;       /* key */
+  height: auto;
   display: block;
-  object-fit: contain; /* ensures full image */
 }
 
-.gallery-ppage .tile:hover img {
+/* Hover effects (keep yours if you like) */
+.gallery-ppage .tile:hover img{
   transform: scale(1.03);
-  filter: grayscale(25) brightness(60%);
+  filter: brightness(60%);
   transition: .4s;
 }
 
@@ -179,7 +234,6 @@ body{
 }
 
 .tile {
-  break-inside: avoid;
   margin: 0 0 10px;
   overflow: hidden;
   display: block;
@@ -214,7 +268,7 @@ body{
 /* Let artwork control height */
 .tile img{
   display: block;
-  object-fit: contain; /* no cropping */
+  object-fit: contain;
   transition: transform .25s ease;
 }
 
@@ -222,36 +276,6 @@ body{
   transform: scale(1.02);
   filter: grayscale(25) brightness(60%);
   transition: .3s;
-}
-
-/* Masonry / puzzle layout (category pages) */
-.gallery-ppage.masonry{
-  display: block;           /* override your grid */
-  column-count: 2;
-  column-gap: 28px;   /* was 18 */
-  padding: 60px 0;    /* more top/bottom air */
-}
-
-.gallery-ppage.masonry .tile{
-  display: inline-block;    /* required for columns */
-  width: 100%;
-  margin: 0 0 18px;
-  break-inside: avoid;
-}
-
-.gallery-ppage.masonry .tile img{
-  width: 100%;
-  height: auto;             /* ✅ auto-fit to image */
-  display: block;
-  object-fit: contain;      /* no cropping */
-}
-
-/* Responsive */
-@media (max-width: 900px){
-  .gallery-ppage.masonry{ column-count: 2; }
-}
-@media (max-width: 600px){
-  .gallery-ppage.masonry{ column-count: 1; }
 }
 
 /* Container */
@@ -406,6 +430,38 @@ body{
   backface-visibility: hidden;
   transform: translate3d(0,0,0);
 }
+}
+
+/* Wix-style collection grid (auto columns) */
+.collection-grid{
+  --min: 280px;                 /* controls how many columns fit */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--min), 1fr));
+  gap: 18px;
+  padding: 40px 0;
+  align-items: start;
+}
+
+.collection-grid .tile{
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 6px;           /* optional, clean tile look */
+}
+
+/* Make tiles feel “collection-like” (uniform boxes) */
+.collection-grid .tile img{
+  width: 100%;
+  aspect-ratio: 1 / 1;          /* change to 1/1 if you want squares */
+  height: auto;
+  display: block;
+  object-fit: cover;            /* Wix-like crop to fill */
+  transition: transform .25s ease, filter .25s ease;
+}
+
+.collection-grid .tile:hover img{
+  transform: scale(1.03);
+  filter: grayscale(25%) brightness(60%);
 }
 
 /* Lightbox overlay */
