@@ -164,10 +164,15 @@ body{
   font-size: clamp(26px, 4.4vw, 42px);
   letter-spacing: -0.02em;
 }
+
 .hero p{
   margin: 0;
   color: var(--muted);
   font-size: 16px;
+}
+
+.hero.project {
+  text-align: center;
 }
 
 .section-title{
@@ -253,7 +258,7 @@ body{
   color: #fff;
   font-size: 30px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 
   opacity: 0;
   transition: opacity 0.35s ease;
@@ -437,7 +442,7 @@ body{
   --min: 280px;                 /* controls how many columns fit */
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--min), 1fr));
-  gap: 18px;
+  gap: 50px;
   padding: 40px 0;
   align-items: start;
 }
@@ -446,22 +451,22 @@ body{
   position: relative;
   display: block;
   overflow: hidden;
-  border-radius: 6px;           /* optional, clean tile look */
+  border-radius: 20px;           /* optional, clean tile look */
+  box-shadow: 2px 2px 2px 2px rgba(0,0,0,0.06);
+  box-shadow: 100%;
 }
 
 /* Make tiles feel “collection-like” (uniform boxes) */
 .collection-grid .tile img{
   width: 100%;
-  aspect-ratio: 1 / 1;          /* change to 1/1 if you want squares */
-  height: auto;
-  display: block;
+  aspect-ratio: 4 / 5;   /* change to 1/1 if you want squares */
   object-fit: cover;            /* Wix-like crop to fill */
   transition: transform .25s ease, filter .25s ease;
 }
 
 .collection-grid .tile:hover img{
-  transform: scale(1.03);
-  filter: grayscale(25%) brightness(60%);
+  transform: scale(1.04);
+  filter: brightness(70%);
 }
 
 /* Lightbox overlay */
