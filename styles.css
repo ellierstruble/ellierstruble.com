@@ -1,0 +1,622 @@
+:root{
+  --max: 1100px;
+  --pad: 18px;
+  --text: #111;
+  --muted: #555;
+  --line: rgba(0,0,0,.12);
+  --bg: #fff;
+}
+
+*{ box-sizing: border-box; }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.container{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--pad) 48px;
+}
+
+.site-header{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 3px solid var(--line);
+}
+
+.nav{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 14px var(--pad);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 650;
+}
+
+.brand{
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 650;
+  letter-spacing: .06em;
+  font-size: 30px;
+}
+
+/* Project navigation container */
+.project-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 80px 0 40px;
+  padding-top: 40px;
+}
+
+.project-back{
+  margin: 80px 0 40px;
+}
+
+.project-back a{
+  text-decoration: none;
+  font-weight: 550;
+  color: var(--text);
+  transition: 0.3s ease;
+}
+
+.project-back a:hover{
+  color: #ff0000;
+}
+
+/* Base link style (same for both) */
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 550;
+  transition: 0.3s ease;
+}
+
+/* Hover effect */
+.project-link:hover {
+  color: #ff0000;
+}
+
+/* Arrow style */
+.project-link .arrow {
+  font-size: 22px;
+  transition: transform 0.3s ease;
+}
+
+/* Directional hover motion */
+.project-link.prev:hover .arrow {
+  transform: translateX(-4px);
+}
+
+.project-link.next:hover .arrow {
+  transform: translateX(4px);
+}
+
+.footer {
+  border-top: 3px solid var(--line);
+  margin-top: 80px;
+  padding: 25px 0;
+  font-size: 13px;
+}
+
+.footer-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap; /* makes it responsive */
+}
+
+.footer-left {
+  color: var(--muted);
+}
+
+.footer-right {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-right a {
+  text-decoration: none;
+  color: var(--text);
+  transition: 0.3s ease;
+}
+
+.footer-right a:hover {
+  color: #ff0000;
+}
+
+.nav-toggle{
+  margin-left:auto;
+  background: transparent;
+  border: 2px solid var(--line);
+  padding: 8px 10px;
+  border-radius: 10px;
+  display: none;
+}
+
+.nav-links{
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 52px;
+  transition: 0.3s ease;
+  font-weight: 550;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color: var(--text);
+  font-size: 20px;
+}
+
+.nav-links a:hover{
+  text-decoration:none;
+  color:#ff0000;
+  transition: .3s;
+}
+
+.hero{
+  padding: 60px 0 30px;
+}
+
+.hero h1{
+  margin: 0 0 6px;
+  font-size: clamp(26px, 4.4vw, 42px);
+  letter-spacing: -0.02em;
+}
+
+.hero p{
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.hero.project {
+  text-align: center;
+}
+
+.section-title{
+  padding: 18px 0 12px;
+}
+.section-title h2{
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.gallery {
+  column-gap: 10px;
+}
+
+.gallery-wrap{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.gallery-ppage{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  padding: 40px 0;
+  align-items: center;
+}
+
+.gallery-ppage video{
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Make video tiles clickable like image tiles */
+.gallery-ppage .tile video{
+  pointer-events: none; /* key: clicks go to the <a> */
+  transition: transform .4s, filter .4s;
+}
+
+.gallery-ppage .tile{
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-ppage .tile img{
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Hover effects (keep yours if you like) */
+.gallery-ppage .tile:hover img{
+  transform: scale(1.03);
+  filter: brightness(60%);
+  transition: .4s;
+}
+
+.gallery-ppage .tile:hover video{
+  transform: scale(1.03);
+  filter: brightness(60%);
+  transition: .4s;
+}
+
+@media (max-width: 900px) {
+  .gallery-ppage {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery-ppage {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tile {
+  margin: 0 0 10px;
+  overflow: hidden;
+  display: block;
+  position: relative;
+}
+
+/* Title positioning */
+.tile-title{
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  color: #fff;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 1; /* above dark overlay */
+}
+
+/* Show title on hover */
+.tile:hover .tile-title {
+  opacity: 100;
+}
+
+/* Let artwork control height */
+.tile img{
+  display: block;
+  object-fit: contain;
+  transition: transform .25s ease;
+}
+
+.tile:hover img{
+  transform: scale(1.02);
+  filter: grayscale(25) brightness(60%);
+  transition: .3s;
+}
+
+/* Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Projects, abt and Contacts labels */
+.dropdown-label {
+  cursor: default; /* Not clickable */
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* Arrow */
+.arrow {
+  margin-left: 5px;
+  transition: transform 0.3s ease;
+}
+
+/* Hide dropdown by default */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  min-width: 220px;
+  padding: 10px;
+  border-radius: 14px;
+
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+}
+
+/* SHOW ONLY ON HOVER */
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Links */
+.dropdown-menu a {
+  display: block;
+  padding: 10px;
+  background-color: transparent;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.dropdown-menu a:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color:#ff0000;
+  transition: .3s;
+}
+
+.gallery.marquee {
+  --gap: 18px;
+  --speed: 45s; /* smaller = faster */
+
+  overflow: hidden;
+  width: 100%;
+  padding: 18px 0;
+    cursor: default;
+    user-select: none;
+  -webkit-user-select: none;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 50%; /* helps center snapping */
+}
+
+.gallery.marquee .marquee-track {
+  display: flex;
+  gap: var(--gap);
+  width: max-content;
+  will-change: transform;
+}
+
+.gallery.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.gallery.marquee .tile {
+  flex: 0 0 auto;
+  height: 410px; /* choose your visual height */
+  width: auto;
+  overflow: hidden;
+  display: block;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+.gallery.marquee .tile img {
+  height: 100%;
+  width: auto;
+  object-fit: contain; /* shows full design */
+}
+
+.gallery.marquee .tile:hover img {
+  transform: scale(1.04);
+  filter: grayscale(25) brightness(60%);
+  transition: .3s;
+}
+
+.gallery-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px white;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  font-size: 35px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.gallery-arrow:active {
+  transform: translateY(1px);
+}
+
+/* Seamless loop to the LEFT (requires duplicated items in the track) */
+@keyframes marqueeLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-50% - (var(--gap) / 2))); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery.marquee .marquee-track {
+    animation: none;
+    transform: none;
+  }
+
+  .gallery.marquee.is-dragging {
+  cursor: default;
+}
+
+/* While dragging, stop animation so the user is in control */
+.gallery.marquee.is-dragging .marquee-track {
+  animation-play-state: paused;
+}
+
+.gallery.marquee .marquee-track {
+  backface-visibility: hidden;
+  transform: translate3d(0,0,0);
+}
+}
+
+/* Wix-style collection grid (auto columns) */
+.collection-grid{
+  --min: 280px;                 /* controls how many columns fit */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--min), 1fr));
+  gap: 50px;
+  padding: 40px 0;
+  align-items: start;
+}
+
+.collection-grid .tile{
+  position: relative;
+  display: block;
+  overflow: hidden;
+
+  border-radius: 20px;           /* optional, clean tile look */
+  box-shadow: 2px 2px 2px 2px rgba(0,0,0,0.06);
+  box-shadow: 100%;
+}
+
+/* Make tiles feel “collection-like” (uniform boxes) */
+.collection-grid .tile img,
+.collection-grid .tile video {
+  width: 100%;
+  aspect-ratio: 4 / 5;   /* change to 1/1 if you want squares */
+  object-fit: cover;            /* Wix-like crop to fill */
+  transition: transform .25s ease, filter .25s ease;
+}
+
+.collection-grid .tile:hover img,
+.collection-grid .tile:hover video{
+  transform: scale(1.04);
+  filter: brightness(70%);
+}
+
+/* Lightbox overlay */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+}
+
+.lightbox-video{
+  max-width: 100%;
+  max-height: 82vh;
+  display: none;
+}
+
+.lightbox-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: min(1100px, 92vw);
+}
+
+.lightbox.is-open {
+  display: flex;
+}
+
+.lightbox-figure {
+  margin: 0;
+  max-width: min(1100px, 92vw);
+  max-height: 82vh;
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+}
+
+.lightbox-stage {
+  overflow: hidden;
+  max-width: min(1100px, 92vw);
+  max-height: 82vh;
+  cursor: zoom-in;
+}
+
+.lightbox-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 82vh;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform-origin: center center;
+  transition: transform 0.12s ease;
+  will-change: transform;
+}
+
+
+.lightbox-caption {
+  margin-top: 12px;
+  text-align: center;
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  border: 0;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.lightbox-close { top: 16px; right: 16px; font-size: 28px; line-height: 44px; }
+.lightbox-prev  { left: 16px;  top: 50%; transform: translateY(-50%); font-size: 28px; }
+.lightbox-next  { right: 16px; top: 50%; transform: translateY(-50%); font-size: 28px; }
+
+@media (max-width: 640px) {
+  .lightbox-prev { left: 10px; }
+  .lightbox-next { right: 10px; }
+}
+
+/* Mobile menu behavior */
+@media (max-width: 760px){
+  .nav-toggle{ display: inline-flex; }
+  .nav-links{
+    position: fixed;
+    inset: 64px 14px auto 14px;
+    background: var(--bg);
+    border: 2px solid var(--line);
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .nav-links.open{ display:flex; }
+
+  .dropdown-menu{
+    position:fixed;
+    box-shadow: none;
+    border: 0;
+    padding: 6px 0 0;
+    display: none;
+  }
+
+/* 🔥 Show dropdown on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+}
